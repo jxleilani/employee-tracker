@@ -23,7 +23,7 @@ function start() {
             type: 'list',
             name: 'start',
             message: 'What would you like to do?',
-            choices: ['View all employees', 'Add Employee', 'Update Employee', 'Remove Employee', 'View All Roles', 'Add Role', 'Update Role', 'View All Departments', 'Add Department', 'Update Department']
+            choices: ['View all employees', 'Add Employee', 'Update Employee', 'Remove Employee', 'View All Roles', 'Add Role', 'Update Role', 'View All Departments', 'Add Department', 'Update Department', 'Exit']
         })
         .then(function(answer) {
           switch (answer.start) {
@@ -34,7 +34,7 @@ function start() {
             case 'Update Employee':
               return updateEmployee();
             case 'Remove Employee':
-              return console.log("Hi");
+              return removeEmployee();
             case 'View All Roles':
               return console.log("Hi");
             case 'Add Role':
@@ -46,6 +46,9 @@ function start() {
             case 'Add Department':
               return console.log("Hi");
             case 'Update Department':
+              return console.log("Hi");
+            case 'Exit':
+              connection.end();
           }
         });
 }
@@ -192,5 +195,41 @@ function updateLastName(empID){
         start();
       }
     );
+  });
+}
+
+function removeEmployee(){
+  connection.query("SELECT * FROM employee", function(err, res) {
+    if (err) throw err;
+
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'selectEmp',
+          message: 'Who would you like to remove?',
+          choices: ()=> {
+            let choices = [];
+            for(let i=0;i<res.length;i++){
+              choices.push(res[i].id +" "+ res[i].first_name);
+            }
+            return choices;
+          } 
+        }
+      ])
+      .then(function (answerWho){
+        chosenID = answerWho.selectEmp.charAt(0);
+        console.log("Chosen ID: " + chosenID);
+
+        connection.query("DELETE FROM employee WHERE ?", 
+        {
+          id: chosenID
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Successfully deleted employee id: " + chosenID);
+          start();
+        });
+      });
   });
 }

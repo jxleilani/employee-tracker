@@ -131,6 +131,8 @@ function updateEmployee(){
           
           if(answer.updateEmp === 'first name'){
             updateFirstName(chosenID);
+          }else if (answer.updateEmp === 'last name'){
+            updateLastName(chosenID);
           }
         });
       });
@@ -161,6 +163,32 @@ function updateFirstName(empID){
       function(error) {
         if (error) throw error;
         console.log(`First name changed to ${emp.updateEmpFirst}`);
+        start();
+      }
+    );
+  });
+}
+
+function updateLastName(empID){
+  inquirer.prompt({
+    type: 'input',
+    name: 'updateEmpLast',
+    message: "Enter employee's last name"
+  })
+  .then(function(emp){
+    connection.query(
+      "UPDATE employee SET ? WHERE ?",
+      [
+        {
+          last_name: emp.updateEmpLast
+        },
+        {
+          id: empID
+        }
+      ],
+      function(error) {
+        if (error) throw error;
+        console.log(`Last name changed to ${emp.updateEmpLast}`);
         start();
       }
     );

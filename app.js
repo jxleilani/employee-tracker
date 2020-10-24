@@ -23,12 +23,18 @@ function start() {
             type: 'list',
             name: 'start',
             message: 'What would you like to do?',
-            choices: ['View all employees', 'Add Employee', 'Update Employee', 'Remove Employee', 'View All Roles', 'Add Role', 'Update Role', 'View All Departments', 'Add Department', 'Update Department', 'Exit']
+            choices: ['View all employees', 'View employees by department', 'View employees by role',
+            'Add Employee', 'Update Employee', 'Remove Employee', 
+            'View All Roles', 'Add Role', 'Update Role', 
+            'View All Departments', 'Add Department', 'Update Department', 
+            'Exit']
         })
         .then(function(answer) {
           switch (answer.start) {
             case 'View all employees':
-              return viewEmployees();   
+              return viewEmployees();  
+            case 'View employees by department':
+              return viewByDept(); 
             case 'Add Employee':
               return addEmployee();
             case 'Update Employee':
@@ -54,10 +60,37 @@ function start() {
 }
 
 function viewEmployees(){
-  connection.query("SELECT * FROM employee", function(err, res) {
+  connection.query(
+    "SELECT first_name, last_name, title, dept_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id", 
+    function(err, res) {
     if (err) throw err;
     console.table(res);
     start();
+  });
+}
+
+function viewByDept(){
+  connection.query("SELECT * FROM department", function(err, res) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'selectDept',
+          message: 'Select a department',
+          choices: ()=> {
+            let choices = [];
+            for(let i=0;i<res.length;i++){
+              choices.push(res[i].first_name);
+            }
+            return choices;
+          } 
+        }
+      ])
+      .then(function(answer){
+        var dept = answer.selectDept;
+        console.log(dept);
+      });
   });
 }
 

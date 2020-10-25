@@ -129,12 +129,12 @@ function addEmployee(){
     });
 }
 
-let chosenID;
+
 
 function updateEmployee(){
   connection.query("SELECT * FROM employee", function(err, res) {
     if (err) throw err;
-
+    let chosenID;
     inquirer
       .prompt([
         {
@@ -151,7 +151,8 @@ function updateEmployee(){
         }
       ])
       .then(function (answerWho){
-        chosenID = answerWho.selectEmp.charAt(0);
+        var split = answerWho.selectEmp.split(" ");
+        chosenID = split[0];
         console.log("Chosen ID: " + chosenID);
 
         inquirer
@@ -160,7 +161,7 @@ function updateEmployee(){
           type: 'list',
           name: 'updateEmp',
           message: 'What would you like to update?',
-          choices: ['first name', 'last name', 'role', 'manager']
+          choices: ['first name', 'last name', 'title', 'manager']
         }
         ])
         .then(function (answer){
@@ -169,13 +170,11 @@ function updateEmployee(){
             updateFirstName(chosenID);
           }else if (answer.updateEmp === 'last name'){
             updateLastName(chosenID);
+          }else if (answer.updateEmp === 'title'){
+            updateTitle(chosenID);
           }
-        });
-      });
-      
-        
-      
-    
+      }); 
+    });
   });
 }
 
@@ -230,6 +229,65 @@ function updateLastName(empID){
     );
   });
 }
+
+function updateTitle(empID){
+  var chosenRole;
+  var chosenRoleID;
+  connection.query("SELECT * FROM role", function(err, res) {
+    if (err) throw err;
+
+    inquirer.prompt({
+      type: 'list',
+      name: 'updateTitle',
+      message: "Select title",
+      choices: ()=> {
+        let choices = [];
+        for(let i=0;i<res.length;i++){
+          choices.push(res[i].id +" "+ res[i].title);
+        }
+        return choices;
+      } 
+    })
+    .then(function(answer){
+      var split = answer.updateTitle.split(" ");
+      chosenRoleID = split[0];
+      chosenRole = split[1];
+
+      connection.query("SELECT * FROM role WHERE ?", 
+      {
+        id: chosenRoleID
+      },
+      function(error, res){
+        if (error) throw error;
+        connection.query(
+          "UPDATE employee SET ? WHERE ?",
+          [
+            {
+              role_id: chosenRoleID
+            },
+            {
+              id: empID
+            }
+          ],
+          function(error) {
+            if (error) throw error;
+            console.log(`Title changed to ${chosenRole} roleID: ${chosenRoleID} where id: ${empID}`);
+            start();
+          }
+        );
+      });
+    });
+  }); //end connection
+} // end function
+
+
+
+
+
+
+
+
+
 
 function removeEmployee(){
   connection.query("SELECT * FROM employee", function(err, res) {

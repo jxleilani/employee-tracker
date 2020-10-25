@@ -14,7 +14,7 @@ CREATE TABLE employee(
 
 CREATE TABLE department(
 	id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(30) NOT NULL,
+    dept_name VARCHAR(30) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -39,13 +39,13 @@ VALUES ("Dan", "Kral", 3, 4);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ("Matt", "Torcellini", 3, 4);
 
-INSERT INTO department (name)
+INSERT INTO department (dept_name)
 VALUES ("Management");
-INSERT INTO department (name)
+INSERT INTO department (dept_name)
 VALUES ("Engineering");
-INSERT INTO department (name)
+INSERT INTO department (dept_name)
 VALUES ("Finance");
-INSERT INTO department (name)
+INSERT INTO department (dept_name)
 VALUES ("Legal");
 
 INSERT INTO role (title, salary, department_id)
@@ -63,10 +63,18 @@ SELECT * FROM employee;
 SELECT * FROM department;
 SELECT * FROM role;
 
+-- view employees and titles -- 
 SELECT first_name, last_name, title
 FROM employee
 LEFT JOIN role ON employee.role_id = role.id;
 
-SELECT first_name, last_name, title, name
+-- view employees titles depts -- 
+SELECT first_name, last_name, title, dept_name
 FROM employee LEFT JOIN role ON employee.role_id = role.id
 LEFT JOIN department ON role.department_id = department.id;
+
+-- view employees by manager --
+SELECT first_name, first_name, last_name, title
+FROM employee
+LEFT JOIN role ON employee.role_id = role.id;
+ 

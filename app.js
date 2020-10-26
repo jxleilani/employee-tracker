@@ -25,7 +25,7 @@ function start() {
             message: 'What would you like to do?',
             choices: ['View all employees', 'View employees by department', 'View employees by role',
             'Add Employee', 'Update Employee', 'Remove Employee', 
-            'View All Roles', 'Add Role', 'Update Role', 
+            'View All Roles', 'Add Role', 'Update Role', 'Remove Role', 
             'View All Departments', 'Add Department', 'Update Department', 
             'Exit']
         })
@@ -42,10 +42,12 @@ function start() {
             case 'Remove Employee':
               return removeEmployee();
             case 'View All Roles':
-              return console.log("Hi");
+              return viewRoles();
             case 'Add Role':
               return console.log("Hi");
             case 'Update Role':
+              return console.log("Hi");
+            case 'Remove Role':
               return console.log("Hi");
             case 'View All Departments':
               return console.log("Hi");
@@ -58,7 +60,7 @@ function start() {
           }
         });
 }
-
+//PASSED
 function viewEmployees(){
   connection.query(
     "SELECT first_name, last_name, title, dept_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id", 
@@ -68,7 +70,7 @@ function viewEmployees(){
     start();
   });
 }
-
+//NEED TO JOIN EMPLOYEE INFO
 function viewByDept(){
   connection.query("SELECT * FROM department", function(err, res) {
     if (err) throw err;
@@ -94,6 +96,7 @@ function viewByDept(){
   });
 }
 
+// PASSED
 function addEmployee(){
   inquirer
     .prompt([
@@ -130,7 +133,7 @@ function addEmployee(){
 }
 
 
-
+// NEED TO FINISH UPDATE MANAGER
 function updateEmployee(){
   connection.query("SELECT * FROM employee", function(err, res) {
     if (err) throw err;
@@ -177,118 +180,110 @@ function updateEmployee(){
     });
   });
 }
-
-function updateFirstName(empID){
-  inquirer.prompt({
-    type: 'input',
-    name: 'updateEmpFirst',
-    message: "Enter employee's first name"
-  })
-  .then(function(emp){
-    connection.query(
-      "UPDATE employee SET ? WHERE ?",
-      [
-        {
-          first_name: emp.updateEmpFirst
-        },
-        {
-          id: empID
-        }
-      ],
-      function(error) {
-        if (error) throw error;
-        console.log(`First name changed to ${emp.updateEmpFirst}`);
-        start();
-      }
-    );
-  });
-}
-
-function updateLastName(empID){
-  inquirer.prompt({
-    type: 'input',
-    name: 'updateEmpLast',
-    message: "Enter employee's last name"
-  })
-  .then(function(emp){
-    connection.query(
-      "UPDATE employee SET ? WHERE ?",
-      [
-        {
-          last_name: emp.updateEmpLast
-        },
-        {
-          id: empID
-        }
-      ],
-      function(error) {
-        if (error) throw error;
-        console.log(`Last name changed to ${emp.updateEmpLast}`);
-        start();
-      }
-    );
-  });
-}
-
-function updateTitle(empID){
-  var chosenRole;
-  var chosenRoleID;
-  connection.query("SELECT * FROM role", function(err, res) {
-    if (err) throw err;
-
+  //PASSED
+  function updateFirstName(empID){
     inquirer.prompt({
-      type: 'list',
-      name: 'updateTitle',
-      message: "Select title",
-      choices: ()=> {
-        let choices = [];
-        for(let i=0;i<res.length;i++){
-          choices.push(res[i].id +" "+ res[i].title);
-        }
-        return choices;
-      } 
+      type: 'input',
+      name: 'updateEmpFirst',
+      message: "Enter employee's first name"
     })
-    .then(function(answer){
-      var split = answer.updateTitle.split(" ");
-      chosenRoleID = split[0];
-      chosenRole = split[1];
-
-      connection.query("SELECT * FROM role WHERE ?", 
-      {
-        id: chosenRoleID
-      },
-      function(error, res){
-        if (error) throw error;
-        connection.query(
-          "UPDATE employee SET ? WHERE ?",
-          [
-            {
-              role_id: chosenRoleID
-            },
-            {
-              id: empID
-            }
-          ],
-          function(error) {
-            if (error) throw error;
-            console.log(`Title changed to ${chosenRole} roleID: ${chosenRoleID} where id: ${empID}`);
-            start();
+    .then(function(emp){
+      connection.query(
+        "UPDATE employee SET ? WHERE ?",
+        [
+          {
+            first_name: emp.updateEmpFirst
+          },
+          {
+            id: empID
           }
-        );
-      });
+        ],
+        function(error) {
+          if (error) throw error;
+          console.log(`First name changed to ${emp.updateEmpFirst}`);
+          start();
+        }
+      );
     });
-  }); //end connection
-} // end function
+  }
+  //PASSED
+  function updateLastName(empID){
+    inquirer.prompt({
+      type: 'input',
+      name: 'updateEmpLast',
+      message: "Enter employee's last name"
+    })
+    .then(function(emp){
+      connection.query(
+        "UPDATE employee SET ? WHERE ?",
+        [
+          {
+            last_name: emp.updateEmpLast
+          },
+          {
+            id: empID
+          }
+        ],
+        function(error) {
+          if (error) throw error;
+          console.log(`Last name changed to ${emp.updateEmpLast}`);
+          start();
+        }
+      );
+    });
+  }
+  //PASSED
+  function updateTitle(empID){
+    var chosenRole;
+    var chosenRoleID;
+    connection.query("SELECT * FROM role", function(err, res) {
+      if (err) throw err;
 
+      inquirer.prompt({
+        type: 'list',
+        name: 'updateTitle',
+        message: "Select title",
+        choices: ()=> {
+          let choices = [];
+          for(let i=0;i<res.length;i++){
+            choices.push(res[i].id +" "+ res[i].title);
+          }
+          return choices;
+        } 
+      })
+      .then(function(answer){
+        var split = answer.updateTitle.split(" ");
+        chosenRoleID = split[0];
+        chosenRole = split[1];
 
+        connection.query("SELECT * FROM role WHERE ?", 
+        {
+          id: chosenRoleID
+        },
+        function(error, res){
+          if (error) throw error;
+          connection.query(
+            "UPDATE employee SET ? WHERE ?",
+            [
+              {
+                role_id: chosenRoleID
+              },
+              {
+                id: empID
+              }
+            ],
+            function(error) {
+              if (error) throw error;
+              console.log(`Title changed to ${chosenRole} roleID: ${chosenRoleID} where id: ${empID}`);
+              start();
+            }
+          );
+        });
+      });
+    }); //end connection
+  } // end function
 
-
-
-
-
-
-
-
+//PASSED
 function removeEmployee(){
   connection.query("SELECT * FROM employee", function(err, res) {
     if (err) throw err;
@@ -322,5 +317,15 @@ function removeEmployee(){
           start();
         });
       });
+  });
+}
+
+function viewRoles(){
+  connection.query(
+    "SELECT title, salary FROM role", 
+    function(err, res) {
+    if (err) throw err;
+    console.table(res);
+    start();
   });
 }

@@ -70,36 +70,41 @@ function viewEmployees(){
     start();
   });
 }
-//NEED TO JOIN EMPLOYEE INFO
+//PASSED
 function viewByDept(){
-  connection.query("SELECT dept_name, title, manager_id, first_name, last_name FROM ", function(err, res) {
+  connection.query("SELECT * FROM department", function(err,res){
     if (err) throw err;
-    inquirer
-      .prompt([
-        {
-          type: 'list',
-          name: 'selectDept',
-          message: 'Select a department',
-          choices: ()=> {
-            let choices = [];
-            for(let i=0;i<res.length;i++){
-              choices.push(res[i].first_name);
-            }
-            return choices;
-          } 
-        }
-      ])
-      .then(function(answer){
-        var dept = answer.selectDept;
-        console.log(dept);
+  
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectDept',
+        message: 'Select a department:',
+        choices: ()=> {
+          let choices = [];
+          for(let i=0;i<res.length;i++){
+            choices.push(res[i].id +" "+res[i].dept_name);
+          }
+          return choices;
+        } 
+      }
+    ]).then(function(answer){
+      var split = answer.selectDept.split(" ");
+      chosenID = split[0];
+      connection.query("SELECT dept_name, title, first_name, last_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE ?", 
+      { department_id: chosenID },
+      function(err, result) {
+        if (err) throw err;
+        console.table(result);
+        start();
       });
+    });
   });
 }
 
 // PASSED
 function addEmployee(){
-  inquirer
-    .prompt([
+  inquirer.prompt([
       {
         type: 'input',
         name: 'firstname',

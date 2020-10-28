@@ -82,4 +82,6 @@ LEFT JOIN role ON employee.role_id = role.id;
 SELECT dept_name, title, manager_id, first_name, last_name
 FROM employee LEFT JOIN role ON employee.role_id = role.id
 LEFT JOIN department ON role.department_id = department.id
-LEFT JOIN 
+LEFT JOIN employee.id = employee.manager_id;
+
+SELECT * FROM employee ORDER BY manager_id;

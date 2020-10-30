@@ -103,7 +103,7 @@ function viewByDept(){
     });
   });
 }
- 
+//PASSED 
 function viewByRole(){
   connection.query("SELECT * FROM role", function(err,res){
     if (err) throw err;
@@ -149,7 +149,7 @@ function addEmployee(){
         message: "Enter the employee's last name:"
       },
       {
-        type: 'input',
+        type: 'list',
         name: 'role',
         message: "Select the employee's role:",
         choices: ()=> {
@@ -180,7 +180,6 @@ function addEmployee(){
     });
   });
 }
-
 
 // NEED TO FINISH UPDATE MANAGER
 function updateEmployee(){

@@ -26,7 +26,7 @@ function start() {
             choices: ['View all Employees', '- View employees by department', '- View employees by role',
             '- Add Employee', '- Update Employee', '- Remove Employee', 
             'View All Roles', '- Add Role', '- Update Role', '- Remove Role', 
-            'View All Departments', '- Add Department', '- Update Department', 
+            'View All Departments', '- Add Department', '- Update Department', '- Remove Department',
             'Exit']
         })
         .then(function(answer) {
@@ -57,6 +57,8 @@ function start() {
               return addDept();
             case '- Update Department':
               return console.log("Hi");
+            case '- Remove Department':
+              return removeDept();
             case 'Exit':
               connection.end();
           }
@@ -65,7 +67,7 @@ function start() {
 //PASSED
 function viewEmployees(){
   connection.query(
-    "SELECT first_name, last_name, title, dept_name, salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id", 
+    "SELECT first_name, last_name, title, dept_name, salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id ORDER BY title", 
     function(err, res) {
     if (err) throw err;
     console.table(res);
@@ -195,7 +197,7 @@ function updateEmployee(){
           choices: ()=> {
             let choices = [];
             for(let i=0;i<res.length;i++){
-              choices.push(res[i].id +" "+ res[i].first_name);
+              choices.push(res[i].id +" "+ res[i].first_name +" "+ res[i].last_name);
             }
             return choices;
           } 
@@ -330,6 +332,7 @@ function updateEmployee(){
         });
       }); //end connection
     } // end function
+    
 
 //PASSED
 function removeEmployee(){
@@ -351,8 +354,9 @@ function removeEmployee(){
           } 
         }
       ])
-      .then(function (answerWho){
-        chosenID = answerWho.selectEmp.charAt(0);
+      .then(function (answer){
+        var split = answer.selectEmp.split(" ");
+        chosenID = split[0];
         connection.query("DELETE FROM employee WHERE ?", 
         {
           id: chosenID
@@ -434,7 +438,7 @@ function viewDepts(){
     start();
   });
 }
-
+//PASSED
 function addDept(){
   var chosenID;
   connection.query("SELECT * FROM department", function(err, res) {
@@ -460,5 +464,40 @@ function addDept(){
         }
       );
     });
+  });
+}
+
+function removeDept(){
+  connection.query("SELECT * FROM department", function(err, res) {
+    if (err) throw err;
+
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'selectDept',
+          message: 'Which department would you like to remove?',
+          choices: ()=> {
+            let choices = [];
+            for(let i=0;i<res.length;i++){
+              choices.push(res[i].id +" "+ res[i].dept_name);
+            }
+            return choices;
+          } 
+        }
+      ])
+      .then(function (answer){
+        var split = answer.selectDept.split(" ");
+        chosenID = split[0];
+        connection.query("DELETE FROM department WHERE ?", 
+        {
+          id: chosenID
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Successfully deleted department id: " + chosenID);
+          start();
+        });
+      });
   });
 }

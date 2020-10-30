@@ -73,15 +73,16 @@ SELECT first_name, last_name, title, dept_name
 FROM employee LEFT JOIN role ON employee.role_id = role.id
 LEFT JOIN department ON role.department_id = department.id;
 
--- view employees by manager --
-SELECT first_name, first_name, last_name, title
-FROM employee
-LEFT JOIN role ON employee.role_id = role.id;
-
 -- view by department -- 
-SELECT dept_name, title, manager_id, first_name, last_name
+SELECT dept_name, title, first_name, last_name
 FROM employee LEFT JOIN role ON employee.role_id = role.id
 LEFT JOIN department ON role.department_id = department.id
-LEFT JOIN employee.id = employee.manager_id;
+WHERE department_id = 1;
 
 SELECT * FROM employee ORDER BY manager_id;
+
+-- view by manager ? -- 
+SELECT dept_name, title, first_name, last_name
+FROM employee LEFT JOIN role ON employee.role_id = role.id 
+LEFT JOIN department ON role.department_id = department_id 
+ORDER BY department_id;

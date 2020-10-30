@@ -23,37 +23,39 @@ function start() {
             type: 'list',
             name: 'start',
             message: 'What would you like to do?',
-            choices: ['View all employees', 'View employees by department', 'View employees by role',
-            'Add Employee', 'Update Employee', 'Remove Employee', 
-            'View All Roles', 'Add Role', 'Update Role', 'Remove Role', 
-            'View All Departments', 'Add Department', 'Update Department', 
+            choices: ['View all Employees', '- View employees by department', '- View employees by role',
+            '- Add Employee', '- Update Employee', '- Remove Employee', 
+            'View All Roles', '- Add Role', '- Update Role', '- Remove Role', 
+            'View All Departments', '- Add Department', '- Update Department', 
             'Exit']
         })
         .then(function(answer) {
           switch (answer.start) {
-            case 'View all employees':
+            case 'View all Employees':
               return viewEmployees();  
-            case 'View employees by department':
+            case '- View employees by department':
               return viewByDept(); 
-            case 'Add Employee':
+            case '- View employees by role':
+              return viewByRole();
+            case '- Add Employee':
               return addEmployee();
-            case 'Update Employee':
+            case '- Update Employee':
               return updateEmployee();
-            case 'Remove Employee':
+            case '- Remove Employee':
               return removeEmployee();
             case 'View All Roles':
               return viewRoles();
-            case 'Add Role':
+            case '- Add Role':
               return addRole();
-            case 'Update Role':
+            case '- Update Role':
               return console.log("Hi");
-            case 'Remove Role':
+            case '- Remove Role':
               return console.log("Hi");
             case 'View All Departments':
               return viewDepts();
-            case 'Add Department':
+            case '- Add Department':
               return console.log("Hi");
-            case 'Update Department':
+            case '- Update Department':
               return console.log("Hi");
             case 'Exit':
               connection.end();
@@ -63,7 +65,7 @@ function start() {
 //PASSED
 function viewEmployees(){
   connection.query(
-    "SELECT first_name, last_name, title, dept_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id", 
+    "SELECT first_name, last_name, title, dept_name, salary FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id", 
     function(err, res) {
     if (err) throw err;
     console.table(res);
@@ -101,10 +103,41 @@ function viewByDept(){
     });
   });
 }
-
+ 
+function viewByRole(){
+  connection.query("SELECT * FROM role", function(err,res){
+    if (err) throw err;
+  
+    inquirer.prompt([
+      {
+        type: 'list',
+        name: 'selectRole',
+        message: 'Select a role:',
+        choices: ()=> {
+          let choices = [];
+          for(let i=0;i<res.length;i++){
+            choices.push(res[i].id +" "+res[i].title);
+          }
+          return choices;
+        } 
+      }
+    ]).then(function(answer){
+      var split = answer.selectRole.split(" ");
+      chosenID = split[0];
+      connection.query("SELECT dept_name, title, first_name, last_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id WHERE role.id = " + chosenID, 
+      function(err, result) {
+        if (err) throw err;
+        console.table(result);
+        start();
+      });
+    });
+  });
+}
 // PASSED
 function addEmployee(){
-  inquirer.prompt([
+  connection.query("SELECT * FROM role", function(err, res) {
+    if (err) throw err;
+    inquirer.prompt([
       {
         type: 'input',
         name: 'firstname',
@@ -118,15 +151,25 @@ function addEmployee(){
       {
         type: 'input',
         name: 'role',
-        message: "Select the employee's role:"
+        message: "Select the employee's role:",
+        choices: ()=> {
+          let choices = [];
+          for(let i=0;i<res.length;i++){
+            choices.push(res[i].id +" "+ res[i].title);
+          }
+          return choices;
+        } 
       }
     ])
     .then(function(res){
+      var split = res.role.split(" ");
+      chosenID = split[0];
       connection.query(
         "INSERT INTO employee SET ?",
         {
           first_name: res.firstname,
-          last_name: res.lastname
+          last_name: res.lastname,
+          role_id: chosenID
         },
         function(err) {
           if (err) throw err;
@@ -135,6 +178,7 @@ function addEmployee(){
         }
       );
     });
+  });
 }
 
 

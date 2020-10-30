@@ -54,7 +54,7 @@ function start() {
             case 'View All Departments':
               return viewDepts();
             case '- Add Department':
-              return console.log("Hi");
+              return addDept();
             case '- Update Department':
               return console.log("Hi");
             case 'Exit':
@@ -353,8 +353,6 @@ function removeEmployee(){
       ])
       .then(function (answerWho){
         chosenID = answerWho.selectEmp.charAt(0);
-        console.log("Chosen ID: " + chosenID);
-
         connection.query("DELETE FROM employee WHERE ?", 
         {
           id: chosenID
@@ -434,5 +432,33 @@ function viewDepts(){
     if (err) throw err;
     console.table(res);
     start();
+  });
+}
+
+function addDept(){
+  var chosenID;
+  connection.query("SELECT * FROM department", function(err, res) {
+    if (err) throw err;
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'deptname',
+        message: "Enter the department name:"
+      }
+    ])
+    .then(function(answer){
+      connection.query(
+        "INSERT INTO department SET ?",
+        {
+          dept_name: answer.deptname
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Department successfully added.");
+          start();
+        }
+      );
+    });
   });
 }

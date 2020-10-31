@@ -347,7 +347,7 @@ function removeEmployee(){
           choices: ()=> {
             let choices = [];
             for(let i=0;i<res.length;i++){
-              choices.push(res[i].id +" "+ res[i].first_name);
+              choices.push(res[i].id +" "+ res[i].first_name +" "+ res[i].last_name);
             }
             return choices;
           } 

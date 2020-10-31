@@ -48,15 +48,15 @@ function start() {
             case '- Add Role':
               return addRole();
             case '- Update Role':
-              return console.log("Hi");
+              return updateRole();
             case '- Remove Role':
-              return console.log("Hi");
+              return removeRole();
             case 'View All Departments':
               return viewDepts();
             case '- Add Department':
               return addDept();
             case '- Update Department':
-              return console.log("Hi");
+              return updateDept();
             case '- Remove Department':
               return removeDept();
             case 'Exit':
@@ -206,7 +206,6 @@ function updateEmployee(){
       .then(function (answerWho){
         var split = answerWho.selectEmp.split(" ");
         chosenID = split[0];
-        console.log("Chosen ID: " + chosenID);
 
         inquirer
         .prompt([
@@ -214,7 +213,7 @@ function updateEmployee(){
           type: 'list',
           name: 'updateEmp',
           message: 'What would you like to update?',
-          choices: ['first name', 'last name', 'title', 'manager']
+          choices: ['first name', 'last name', 'title']
         }
         ])
         .then(function (answer){
@@ -324,7 +323,7 @@ function updateEmployee(){
               ],
               function(error) {
                 if (error) throw error;
-                console.log(`Title changed to ${chosenRole} roleID: ${chosenRoleID} where id: ${empID}`);
+                console.log(`Title changed to ${chosenRole}`);
                 start();
               }
             );
@@ -428,6 +427,89 @@ function addRole(){
     });
   });
 }
+
+function removeRole(){
+  connection.query("SELECT * FROM role", function(err, res) {
+    if (err) throw err;
+
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'selectRole',
+          message: 'Which role would you like to remove?',
+          choices: ()=> {
+            let choices = [];
+            for(let i=0;i<res.length;i++){
+              choices.push(res[i].id +" "+ res[i].title);
+            }
+            return choices;
+          } 
+        }
+      ])
+      .then(function (answer){
+        var split = answer.selectRole.split(" ");
+        chosenID = split[0];
+        connection.query("DELETE FROM role WHERE ?", 
+        {
+          id: chosenID
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Successfully deleted role id: " + chosenID);
+          start();
+        });
+      });
+  });
+}
+//PASSED
+function updateRole(){
+  connection.query("SELECT * FROM role", function(err, res) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'selectRole',
+          message: 'Which role would you like to update?',
+          choices: ()=> {
+            let choices = [];
+            for(let i=0;i<res.length;i++){
+              choices.push(res[i].id +" "+ res[i].title);
+            }
+            return choices;
+          } 
+        }
+      ])
+      .then(function(answer){
+        var split = answer.selectRole.split(" ");
+        chosenID = split[0];
+
+        inquirer.prompt([
+          {
+          type: 'input',
+          name: 'rolename',
+          message: 'Enter the new role title:'
+          },
+          {
+            type: 'input',
+            name: 'salary',
+            message: 'Enter the salary amount:'
+          }
+        ]).then(function(answer2){
+          connection.query("UPDATE role SET title = ?, salary = ? WHERE id = ?", 
+          [answer2.rolename, answer2.salary, chosenID],
+          function(err, res) {
+            if (err) throw err;
+            console.log(`${answer2.rolename} successfully updated.`);
+            start();
+        });
+        
+        
+      });
+    });
+  });
+}
 //PASSED
 function viewDepts(){
   connection.query(
@@ -466,7 +548,7 @@ function addDept(){
     });
   });
 }
-
+//PASSED
 function removeDept(){
   connection.query("SELECT * FROM department", function(err, res) {
     if (err) throw err;
@@ -499,5 +581,55 @@ function removeDept(){
           start();
         });
       });
+  });
+}
+//PASSED
+function updateDept(){
+  connection.query("SELECT * FROM department", function(err, res) {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          type: 'list',
+          name: 'selectDept',
+          message: 'Which department would you like to update?',
+          choices: ()=> {
+            let choices = [];
+            for(let i=0;i<res.length;i++){
+              choices.push(res[i].id +" "+ res[i].dept_name);
+            }
+            return choices;
+          } 
+        }
+      ])
+      .then(function(answer){
+        var split = answer.selectDept.split(" ");
+        chosenID = split[0];
+
+        inquirer.prompt([
+          {
+          type: 'input',
+          name: 'deptname',
+          message: 'Enter the new department name:'
+          }
+        ]).then(function(answer2){
+          connection.query("UPDATE department SET ? WHERE ?", 
+          [
+          {
+            dept_name: answer2.deptname
+          },
+          {
+            id: chosenID
+          }
+          ],
+          function(err, res) {
+            if (err) throw err;
+            console.log(`Department name updated to ${answer2.deptname}`);
+            start();
+        });
+        
+        
+      });
+    });
   });
 }

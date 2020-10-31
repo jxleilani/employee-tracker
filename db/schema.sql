@@ -27,17 +27,18 @@ CREATE TABLE role(
 );
 
 INSERT INTO employee (first_name, last_name, role_id)
-VALUES ("Joy", "Meredith", 1);
+VALUES ("Tony", "Stark", 1);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Jordan", "Becker", 2, 1);
+VALUES ("Steven", "Rogers", 2, 1);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Kalea", "Becker", 2, 1);
+VALUES ("Bruce", "Banner", 2, 1);
 INSERT INTO employee (first_name, last_name, role_id)
-VALUES ("Ryan", "Caplette", 1);
+VALUES ("Nick", "Fury", 1);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Dan", "Kral", 3, 4);
+VALUES ("Natasha", "Romanoff", 3, 4);
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("Matt", "Torcellini", 3, 4);
+VALUES ("Thor", "Asgard", 3, 4);
+
 
 INSERT INTO department (dept_name)
 VALUES ("Management");
@@ -56,33 +57,3 @@ INSERT INTO role (title, salary, department_id)
 VALUES ("Accountant", 65000, 3);
 INSERT INTO role (title, salary, department_id)
 VALUES ("Paralegal", 60000, 4);
-
-USE employee_db;
-
-SELECT * FROM employee;
-SELECT * FROM department;
-SELECT * FROM role;
-
--- view employees and titles -- 
-SELECT first_name, last_name, title
-FROM employee
-LEFT JOIN role ON employee.role_id = role.id;
-
--- view employees titles depts -- 
-SELECT first_name, last_name, title, dept_name
-FROM employee LEFT JOIN role ON employee.role_id = role.id
-LEFT JOIN department ON role.department_id = department.id;
-
--- view by department -- 
-SELECT dept_name, title, first_name, last_name
-FROM employee LEFT JOIN role ON employee.role_id = role.id
-LEFT JOIN department ON role.department_id = department.id
-WHERE department_id = 1;
-
-SELECT * FROM employee ORDER BY manager_id;
-
--- view by manager ? -- 
-SELECT dept_name, title, first_name, last_name
-FROM employee LEFT JOIN role ON employee.role_id = role.id 
-LEFT JOIN department ON role.department_id = department_id 
-ORDER BY department_id;

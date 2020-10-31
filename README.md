@@ -6,8 +6,8 @@ This employee management system is a command line application that allows the us
 * Dependencies: mysql, inquirer
 * In your terminal, use **npm start** to begin.
 
-![Command Line Interface](https://jxleilani.github.io/employee-tracker/Assets/commandline1.png)  
-![Command Line Interface](https://jxleilani.github.io/employee-tracker/Assets/commandline2.png)
+![Command Line Interface](https://jxleilani.github.io/employee-tracker/assets/commandline1.png)  
+![Command Line Interface](https://jxleilani.github.io/employee-tracker/assets/commandline2.png)
 
 ## Usage
 >**View all Employees:** Lists all employees, sorted by title.  

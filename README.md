@@ -1,5 +1,5 @@
 # Employee Management System   
-This employee management system is a command line application that allows the user to manage employees, roles, and departments. 
+This employee management system is a command line application that allows the user to manage employees, roles, and departments. The user can view employees by selecting specific departments or roles. The application also allows the user to update department names, role titles, as well as employee records. Users are also able to delete employees, roles, and departments. See [Usage](#usage) for more information.
 
 ![Command Line Interface](https://jxleilani.github.io/employee-tracker/assets/commandline1.png)  
 ![Command Line Interface](https://jxleilani.github.io/employee-tracker/assets/commandline2.png)

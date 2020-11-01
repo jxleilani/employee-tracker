@@ -10,6 +10,7 @@ This employee management system is a command line application that allows the us
 * In your terminal, use **npm start** to begin.
 
 ## Usage
+
 >**View all Employees:** Lists all employees, sorted by title.  
 >**View employees by department:** User can select which department to view.  
 >**View employees by role:** User can select which role to view.  
@@ -28,3 +29,6 @@ This employee management system is a command line application that allows the us
 >**Remove Department:** Delete a department. 
   
 >**Exit:** Exit application.  
+
+## Tutorial
+![Video How To](https://jxleilani.github.io/employee-tracker/assets/screencast.mp4)

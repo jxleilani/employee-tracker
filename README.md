@@ -32,4 +32,3 @@ This employee management system is a command line application that allows the us
 
 ## Tutorial
 [Click here for a tutorial](https://drive.google.com/file/d/1WtH4Hj5_O50XJW9ZZzReKAmgY3a2RkUd/view)
-![Video How To](https://drive.google.com/file/d/1WtH4Hj5_O50XJW9ZZzReKAmgY3a2RkUd/preview)

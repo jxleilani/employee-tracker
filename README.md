@@ -31,4 +31,4 @@ This employee management system is a command line application that allows the us
 >**Exit:** Exit application.  
 
 ## Tutorial
-![Video How To](https://jxleilani.github.io/employee-tracker/assets/screencast.mp4)
+![Video How To](https://drive.google.com/file/d/1WtH4Hj5_O50XJW9ZZzReKAmgY3a2RkUd/view)
